@@ -1,0 +1,49 @@
+// -*- c++ -*-
+// G3D Scene File Format
+{
+    name = "Sponza",
+   
+    models = {
+        // Converts the Crytek Sponza to a convenient scale for G3D
+        buildingModel = ArticulatedModel::Specification {
+            filename = "crytek_sponza/sponza.zip/sponza.obj";
+            preprocess = (
+                scale(0.01);
+            );
+        }
+    };
+    
+    lighting = Lighting::Specification {
+        lightArray = (GLight::directional(Vector3(1, 2, 1), Color3(10), true),
+                     GLight::directional(Vector3(-1,-0.5f,-1), Color3::fromARGB(0x1e324d), false));
+
+        environmentMap = {
+            constant = 3.0;
+            texture = "uffizi05_*.jpg";
+        };
+
+    };
+
+    skyBox = {
+        constant = 1.0;
+    };
+    
+    entities = {
+        // Each entity has a name and is an instance of a model.  The instantiation syntax accepts
+        // two (optional) arguments: a position spline (which can be a single position), and a 
+        // pose spline (which can be a single pose).
+        building = Entity {
+            model    = "buildingModel";
+            position = Point3(0.0, 0.0, 0.0);
+        };        
+    };
+        
+    camera = GCamera {
+        coordinateFrame = CFrame::fromXYZYPRDegrees(-11.2f,   1.7f,   0.8f,  64.6f,   1.1f,   0.0f);
+        
+        nearPlaneZ = -0.2;
+        farPlaneZ = -inf;
+        fovDirection = "VERTICAL";
+        fovDegrees = 60;
+    };
+}

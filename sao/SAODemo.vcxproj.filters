@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{dd6347b3-f0b7-47f6-afcc-acc62b6c7a2e}</UniqueIdentifier>
+      <Extensions>*.cpp;*.h</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{aa0e3c2b-20b5-4e86-b542-59eae3fc8be9}</UniqueIdentifier>
+      <Extensions>*.h</Extensions>
+    </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{55264e64-4553-4235-8de7-6508b2f5367f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene Files">
+      <UniqueIdentifier>{eaf054e9-f727-442d-af9f-9d143632047b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Doxyfile" />
+    <None Include="mainpage.dox" />
+    <None Include="reconstruct.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="deferred.pix">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="data\sponza.scn.any">
+      <Filter>Scene Files</Filter>
+    </None>
+    <None Include="SAO_reconstructCSZ.pix">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="SAO_AO.pix">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="SAO_blur.pix">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="SAO_minify.pix">
+      <Filter>Shader Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

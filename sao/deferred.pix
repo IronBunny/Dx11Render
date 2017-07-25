@@ -1,0 +1,78 @@
+#version 120 // -*- c++ -*-
+#extension GL_EXT_gpu_shader4 : require
+
+/**
+ \file deferred.pix
+ \author Morgan McGuire, NVIDIA and Williams College, morgan@cs.williams.edu, http://graphics.cs.williams.edu
+ 
+  Copyright (c) 2011-2012, Morgan McGuire
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#if __VERSION__ == 120
+//  Compatibility with older versions of GLSL
+#   define texelFetch texelFetch2D
+#endif
+
+/** Output */
+#if __VERSION__ == 120
+#   define        result    gl_FragColor.rgb
+#else
+out vec3          result;
+#endif
+
+uniform sampler2D   aoBuffer;
+uniform float       aoIntensity;
+
+uniform sampler2D   LAMBERTIAN_buffer;
+uniform sampler2D   WS_NORMAL_buffer;
+uniform vec2        WS_NORMAL_readScaleBias;
+
+uniform samplerCube environmentMapTexture;
+uniform float       environmentMapConstant;
+
+// Demo options
+uniform bool        useAO;
+uniform bool        useTexture;
+uniform bool        useEnvironmentMap;
+
+uniform ivec2       offset;
+
+// Parameters controling AO tuning
+#define MIN_AMBIENT_LIGHT 0.1
+
+/** Returns a number on (0, 1) [this is only here to aid in visualizing and debugging] */
+float unpackKey(vec2 p) {
+    return p.x * (256.0 / 257.0) + p.y * (1.0 / 257.0);
+}
+
+void main() {
+    // Pixel being shaded 
+    ivec2 ssC = ivec2(gl_FragCoord.xy) + offset;
+
+    vec3  n  = texelFetch(WS_NORMAL_buffer, ssC, 0).xyz;
+
+    if (dot(n, n) == 0.0) {
+        // Skybox
+        result = vec3(1.5);
+        return;
+    }
+    n = normalize(n * WS_NORMAL_readScaleBias.x + vec3(WS_NORMAL_readScaleBias.y));
+        
+    vec3  k_L = useTexture ? texelFetch(LAMBERTIAN_buffer, ssC, 0).rgb : useEnvironmentMap ? vec3(0.5) : vec3(1.0);
+
+    // Radiosity environment map, without texture
+    vec3  B  = textureCube(environmentMapTexture, n).rgb * vec3(environmentMapConstant);
+
+    float ao = useAO ? texelFetch(aoBuffer, ssC, 0).r : 1.0;
+    ao = (clamp(1.0 - (1.0 - ao) * aoIntensity, 0.0, 1.0) + MIN_AMBIENT_LIGHT) /  (1.0 + MIN_AMBIENT_LIGHT);
+    
+    result = vec3(ao) * B * k_L;
+
+}
