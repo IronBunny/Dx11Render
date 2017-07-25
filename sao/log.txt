@@ -1,7 +1,7 @@
 Application Log
 Start: Wed Feb 24 16:09:10 2016
 
-
+test me please
 Entering GApp::GApp()
 cwd = D:\sao
 System::setAppDataDir("data")
